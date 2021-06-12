@@ -1,14 +1,47 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Dimensions, Image, StyleSheet, View } from "react-native";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
+import { Video } from "expo-av";
 
-interface StoryProps {}
+import { SnapchatRoutes } from "../types";
 
-const Story: React.FC<StoryProps> = () => {
-  return <View style={styles.container} />;
+interface StoryProps {
+  navigation: NavigationProp<SnapchatRoutes, "Story">;
+  route: RouteProp<SnapchatRoutes, "Story">;
+}
+
+const { height } = Dimensions.get("window");
+
+const Story: React.FC<StoryProps> = ({ route, navigation }) => {
+  const { story } = route.params;
+  return (
+    <View style={styles.container}>
+      {story.video ? (
+        <Image source={story.source} style={styles.image} />
+      ) : (
+        <Video
+          source={story.video}
+          rate={1.0}
+          isMuted={false}
+          resizeMode="cover"
+          shouldPlay
+          isLooping
+          style={[StyleSheet.absoluteFill]}
+        />
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
+  image: {
+    ...StyleSheet.absoluteFillObject,
+    width: undefined,
+    height: undefined,
+  },
 });
 
 export default Story;
