@@ -1,14 +1,34 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-interface StoriesProps {}
+import { stories } from "../data";
+import StoryThumbnail from "../components/StoryThumbnail";
 
-const Stories: React.FC<StoriesProps> = () => {
-  return <View style={styles.container} />;
+const Stories: React.FC = () => {
+  const insets = useSafeAreaInsets();
+  return (
+    <ScrollView
+      contentContainerStyle={{
+        paddingTop: insets.top + 10,
+        paddingBottom: insets.bottom + 10,
+      }}
+    >
+      <View style={styles.container}>
+        {stories.map((story) => (
+          <StoryThumbnail key={story.id} story={story} />
+        ))}
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly",
+  },
 });
 
 export default Stories;

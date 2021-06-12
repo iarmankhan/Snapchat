@@ -11,7 +11,15 @@ const Stack = createStackNavigator<SnapchatRoutes>();
 const MainNavigator: React.FC = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator mode="modal">
+      <Stack.Navigator
+        screenOptions={{
+          gestureEnabled: false,
+          headerShown: false,
+          cardOverlayEnabled: true,
+          cardStyle: { backgroundColor: "transparent" },
+        }}
+        mode="modal"
+      >
         <Stack.Screen name="Stories" component={Stories} />
         <Stack.Screen name="Story" component={Story} />
       </Stack.Navigator>
