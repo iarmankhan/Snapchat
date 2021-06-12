@@ -10,6 +10,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import { snapPoint } from "react-native-redash";
 
@@ -20,15 +21,21 @@ interface StoryProps {
   route: RouteProp<SnapchatRoutes, "Story">;
 }
 
+const AnimatedVideo = Animated.createAnimatedComponent(Video);
+
 const { height } = Dimensions.get("window");
 
 const Story: React.FC<StoryProps> = ({ route, navigation }) => {
   const { story } = route.params;
 
+  const isGestureActive = useSharedValue(false);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
 
   const onGestureEvent = useAnimatedGestureHandler({
+    onStart: () => {
+      isGestureActive.value = true;
+    },
     onActive: ({ translationX, translationY }) => {
       translateX.value = translationX;
       translateY.value = translationY;
@@ -43,6 +50,7 @@ const Story: React.FC<StoryProps> = ({ route, navigation }) => {
         translateX.value = withSpring(0, { velocity: velocityX });
         translateY.value = withSpring(0, { velocity: velocityX });
       }
+      isGestureActive.value = false;
     },
   });
 
@@ -56,21 +64,28 @@ const Story: React.FC<StoryProps> = ({ route, navigation }) => {
     };
   });
 
+  const borderStyle = useAnimatedStyle(() => ({
+    borderRadius: withTiming(isGestureActive ? 24 : 0),
+  }));
+
   return (
     <PanGestureHandler onGestureEvent={onGestureEvent}>
       <Animated.View style={[storyStyle]}>
         <SharedElement id={story.id} style={styles.container}>
           {!story.video ? (
-            <Image source={story.source} style={styles.image} />
+            <Animated.Image
+              source={story.source}
+              style={[styles.image, borderStyle]}
+            />
           ) : (
-            <Video
+            <AnimatedVideo
               source={story.video}
               rate={1.0}
               isMuted={false}
               resizeMode="cover"
               shouldPlay
               isLooping
-              style={[StyleSheet.absoluteFill]}
+              style={[StyleSheet.absoluteFill, borderStyle]}
             />
           )}
         </SharedElement>
