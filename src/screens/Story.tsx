@@ -1,10 +1,12 @@
 import React from "react";
-import { Dimensions, Image, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { Video } from "expo-av";
 import { SharedElement } from "react-navigation-shared-element";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
+  Extrapolate,
+  interpolate,
   runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
@@ -55,11 +57,18 @@ const Story: React.FC<StoryProps> = ({ route, navigation }) => {
   });
 
   const storyStyle = useAnimatedStyle(() => {
+    const scale = interpolate(
+      translateY.value,
+      [0, height],
+      [1, 0.5],
+      Extrapolate.CLAMP
+    );
     return {
       flex: 1,
       transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
+        { translateX: translateX.value * scale },
+        { translateY: translateY.value * scale },
+        { scale },
       ],
     };
   });
