@@ -4,8 +4,9 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import Stories from "../screens/Stories";
 import Story from "../screens/Story";
+import { SnapchatRoutes } from "../types";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<SnapchatRoutes>();
 
 const MainNavigator: React.FC = () => {
   return (
